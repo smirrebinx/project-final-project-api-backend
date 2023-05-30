@@ -39,10 +39,8 @@ app.get("/", (req, res) => {
   res.send(listEndpoints(app));
 });
 
-const { Schema } = mongoose;
-
 const UserSchema = new mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
     required: true,
     unique: true
@@ -61,19 +59,19 @@ const User = mongoose.model("User", UserSchema);
 
 // Registration
 app.post(PATHS.register, async (req, res) => {
-  const { name, password } = req.body;
+  const { firstName, password } = req.body;
 
   try {
     const salt = bcrypt.genSaltSync();
     // Do not store plaintext passwords
     const newUser = await new User({
-      name: name,
+      firstName: firstName,
       password: bcrypt.hashSync(password, salt)})
     .save();
     res.status(201).json({
       success: true,
       response: {
-        name: newUser.name,
+        firstName: newUser.firstName,
         id: newUser._id,
         accessToken: newUser.accessToken
       }
@@ -90,14 +88,14 @@ app.post(PATHS.register, async (req, res) => {
 });
 // Login
 app.post(PATHS.login, async (req, res) => {
-  const { name, password } = req.body;
+  const { firstName, password } = req.body;
   try {
-    const user = await User.findOne({name: name})
+    const user = await User.findOne({firstName: firstName})
     if (user && bcrypt.compareSync(password, user.password)) {
       res.status(200).json({
         success: true,
         response: {
-          name: user.name,
+          firstName: user.firstName,
           id: user._id,
           accessToken: user.accessToken
         }
@@ -170,13 +168,13 @@ app.listen(port, () => {
 
 // Post: http://localhost:8080/register 
 // {
-//   "name": "enter new name",
+//   "firstName": "enter new name",
 //   "password": "enter password"
 // }
 
 // Post: http://localhost:8080/login
 // {
-//     "name": "name",
+//     "firstName": "name",
 //     "password": "password"
 // }
 
@@ -186,7 +184,7 @@ app.listen(port, () => {
 
 // Post: http://localhost:8080/sessions
 // {
-//     "name": "name",
+//     "firstName": "name",
 //     "password": "password"
 // }
 
