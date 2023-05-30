@@ -30,9 +30,9 @@ const PATHS = {
   root: "/",
   register: "/register",
   login: "/login",
+  treatments: "/treatments",
   bookTreatment: "/book-treatment",
-  secrets: "/secrets",
-  sessions: "/sessions"
+  secrets: "/secrets"
 }
 
 // Start defining your routes here
@@ -76,14 +76,6 @@ const UserSchema = new mongoose.Schema({
     treatment: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Treatment"
-    },
-    date: {
-      type: Date,
-      required: true
-    },
-    time: {
-      type: String,
-      required: true
     }
   }]
 });
@@ -108,6 +100,42 @@ styling: {
 });
 
 const Treatment = mongoose.model("Treatment", TreatmentSchema);
+
+// Create and save the treatments to the database
+const treatments = [
+  { cut: "Haircut" },
+  { wash: "Hair wash" },
+  { cutAndWash: "Haircut and wash" },
+  { styling: "Hair styling" }
+];
+
+// Save treatmens to the database
+treatments.forEach(async (treatmentData) => {
+  try {
+    const treatment = new Treatment(treatmentData);
+    await treatment.save();
+    console.log("Treatment created succesfully");
+} catch (error) {
+  console.error("Failed to create treatments", error)
+};
+});
+
+// GET
+app.get(PATHS.treatments, async (_, res) => {
+  try {
+    const treatments = await Treatment.find();
+      res.status(200).json({
+        success: true,
+        treatments: treatments,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to retrieve treatments",
+        error,
+      });
+  }
+})
 
 // Registration
 app.post(PATHS.register, async (req, res) => {
@@ -195,7 +223,7 @@ const authenticateUser = async (req, res, next) => {
 }
 
 app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
-  const { treatmentId, date } = req.body;
+  const { treatmentId } = req.body;
   const userId = req.user._id;
 
   try {
@@ -215,8 +243,7 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
 
     // Create a new booking object
     const booking = {
-      treatment: treatment._id,
-      date: new Date(date),
+      treatment: treatment._id
     };
 
     // Add the booking to the user's bookedTreatments array
@@ -238,7 +265,7 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
 });
 
 // Authenticate the user and return the secret message
-app.get(PATHS.secrets, authenticateUser, async (req, res) => {
+app.get(PATHS.secrets, async (req, res) => {
   const accessToken = req.header("Authorization");
   try {
     const user = await User.findOne({ accessToken: accessToken });
@@ -283,10 +310,4 @@ app.listen(port, () => {
 // Get   http://localhost:8080/secrets
 // Headers: Authorization
 // Enter accessToken in value
-
-// Post: http://localhost:8080/sessions
-// {
-//     "firstName": "name",
-//     "password": "password"
-// }
 
