@@ -30,6 +30,7 @@ const PATHS = {
   root: "/",
   register: "/register",
   login: "/login",
+  bookTreatment: "/book-treatment",
   secrets: "/secrets",
   sessions: "/sessions"
 }
@@ -70,12 +71,43 @@ const UserSchema = new mongoose.Schema({
   accessToken: {
     type: String,
     default: () => crypto.randomBytes(128).toString("hex")
-  }
+  },
+  bookedTreatments: [{
+    treatment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Treatment"
+    },
+    date: {
+      type: Date,
+      required: true
+    },
+    time: {
+      type: String,
+      required: true
+    }
+  }]
 });
 
 UserSchema.index({ email: 1, mobilePhone: 1}, {unique: true });
 
 const User = mongoose.model("User", UserSchema);
+
+const TreatmentSchema = new mongoose.Schema({
+cut: {
+  type: String
+}, 
+wash: {
+  type: String
+}, 
+cutAndWash: {
+  type: String
+},
+styling: {
+  type: String
+}
+});
+
+const Treatment = mongoose.model("Treatment", TreatmentSchema);
 
 // Registration
 app.post(PATHS.register, async (req, res) => {
@@ -145,6 +177,7 @@ const authenticateUser = async (req, res, next) => {
   try {
     const user = await User.findOne({accessToken: accessToken});
     if (user) {
+      req.user = user; // Set the authenticated user object in the request
       next();
     } else {
       res.status(401).json({
@@ -161,13 +194,56 @@ const authenticateUser = async (req, res, next) => {
   }
 }
 
+app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
+  const { treatmentId, date } = req.body;
+  const userId = req.user._id;
+
+  try {
+    // Find the user and treatment by theri IDs
+    const [user, treatment] = await Promise.all([
+      User.findById(userId),
+      Treatment.findById(treatmentId),
+    ]);
+
+    if (!user || !treatment) {
+      res.status(404).json({
+        success: false, 
+        message: "User or treatment not found",
+      });
+      return;
+    }
+
+    // Create a new booking object
+    const booking = {
+      treatment: treatment._id,
+      date: new Date(date),
+    };
+
+    // Add the booking to the user's bookedTreatments array
+    user.bookedTreatments.push(booking);
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Treatment booked successfully",
+      booking,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to book treatment",
+      error, 
+    });
+  }
+});
+
 // Authenticate the user and return the secret message
 app.get(PATHS.secrets, authenticateUser, async (req, res) => {
   const accessToken = req.header("Authorization");
   try {
     const user = await User.findOne({ accessToken: accessToken });
     if (user) {
-      const secretMessage = "This is the secret page! Woop woop";
+      const secretMessage = "This is your user information";
       res.status(200).json({ secret: secretMessage });
     } else {
       res.status(401).json({
