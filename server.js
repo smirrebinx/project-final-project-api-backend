@@ -43,6 +43,19 @@ const UserSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true,
+  },
+  lastName: {
+    type: String, 
+    required: true, 
+  },
+  email: {
+    type: String, 
+    required: true,
+    unique: true 
+  },
+  mobilePhone: {
+    type: String,
+    required: true,
     unique: true
   },
   password: {
@@ -59,19 +72,23 @@ const User = mongoose.model("User", UserSchema);
 
 // Registration
 app.post(PATHS.register, async (req, res) => {
-  const { firstName, password } = req.body;
+  const { firstName, lastName, email, mobilePhone, password } = req.body;
 
   try {
     const salt = bcrypt.genSaltSync();
     // Do not store plaintext passwords
     const newUser = await new User({
-      firstName: firstName,
+      firstName, 
+      lastName,
+      email,
+      mobilePhone,
       password: bcrypt.hashSync(password, salt)})
     .save();
     res.status(201).json({
       success: true,
       response: {
         firstName: newUser.firstName,
+        lastName: newUser.lastName,
         id: newUser._id,
         accessToken: newUser.accessToken
       }
@@ -88,14 +105,15 @@ app.post(PATHS.register, async (req, res) => {
 });
 // Login
 app.post(PATHS.login, async (req, res) => {
-  const { firstName, password } = req.body;
+  const { email, password } = req.body;
   try {
-    const user = await User.findOne({firstName: firstName})
+    const user = await User.findOne({email: email})
     if (user && bcrypt.compareSync(password, user.password)) {
       res.status(200).json({
         success: true,
         response: {
           firstName: user.firstName,
+          lastName: user.lastName,
           id: user._id,
           accessToken: user.accessToken
         }
@@ -137,7 +155,7 @@ const authenticateUser = async (req, res, next) => {
 }
 
 // Authenticate the user and return the secret message
-app.get(PATHS.secrets, async (req, res) => {
+app.get(PATHS.secrets, authenticateUser, async (req, res) => {
   const accessToken = req.header("Authorization");
   try {
     const user = await User.findOne({ accessToken: accessToken });
@@ -167,10 +185,11 @@ app.listen(port, () => {
 // Test in postman
 
 // Post: http://localhost:8080/register 
-// {
-//   "firstName": "enter new name",
-//   "password": "enter password"
-// }
+    // "firstName": "firstname",
+    // "lastName": "lastname",
+    // "email": "name@gmail.com",
+    // "mobilePhone": "0000000000"
+    // "password": "password"
 
 // Post: http://localhost:8080/login
 // {
