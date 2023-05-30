@@ -43,14 +43,14 @@ const UserSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true,
-    minLength: 2,
-    maxLength: 30
+    minlength: 2,
+    maxlength: 30
   },
   lastName: {
     type: String, 
     required: true, 
-    minLength: 2,
-    maxLength: 30
+    minlength: 2,
+    maxlength: 30
   },
   email: {
     type: String, 
@@ -65,14 +65,15 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minLength: 15,
-    maxLength: 20
+    minlength: 15
   },
   accessToken: {
     type: String,
     default: () => crypto.randomBytes(128).toString("hex")
   }
 });
+
+UserSchema.index({ email: 1, mobilePhone: 1}, {unique: true });
 
 const User = mongoose.model("User", UserSchema);
 
