@@ -40,6 +40,17 @@ app.get("/", (req, res) => {
   res.send(listEndpoints(app));
 });
 
+const validatePhone = (value) => {
+  if (typeof value !== 'number') {
+    throw new Error('Mobile phone must be a number');
+  }
+
+const phoneNumber = String(value); // Convert the number to a string for length check
+if (phoneNumber.length < 10 || phoneNumber.length > 15) {
+      throw new Error('Mobile phone must be between 10 and 15 digits')
+    }
+};
+
 const UserSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -59,9 +70,13 @@ const UserSchema = new mongoose.Schema({
     unique: true 
   },
   mobilePhone: {
-    type: String,
+    type: Number,
     required: true,
-    unique: true
+    unique: true,
+    validate: {
+      validator: validatePhone,
+      message: 'Mobile phone must be a number'
+    }
   },
   password: {
     type: String,
