@@ -314,7 +314,7 @@ app.listen(port, () => {
     // "firstName": "firstname",
     // "lastName": "lastname",
     // "email": "name@gmail.com",
-    // "mobilePhone": "0000000000"
+    // "mobilePhone": "0000000000",
     // "password": "password"
 
 // Post: http://localhost:8080/login
