@@ -65,8 +65,7 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
-    minlength: 15
+    required: true
   },
   accessToken: {
     type: String,
@@ -140,7 +139,9 @@ app.get(PATHS.treatments, async (_, res) => {
 // Registration
 app.post(PATHS.register, async (req, res) => {
   const { firstName, lastName, email, mobilePhone, password } = req.body;
-
+  if (password.length < 15 || password.length > 20) {
+    res.status(400).json({success: false, message: "Password needs to be between 15 and 20 characters"})
+  }
   try {
     const salt = bcrypt.genSaltSync();
     // Do not store plaintext passwords
