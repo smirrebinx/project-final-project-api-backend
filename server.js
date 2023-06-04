@@ -32,7 +32,7 @@ const PATHS = {
   login: "/login",
   treatments: "/treatments",
   bookTreatment: "/book-treatment",
-  secrets: "/secrets"
+  userInfo: "/user-info"
 }
 
 // Start defining your routes here
@@ -280,8 +280,8 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
   }
 });
 
-// Authenticate the user and return the secret message
-app.get(PATHS.secrets, async (req, res) => {
+// Authenticate the user and return the user info page
+app.get(PATHS.userInfo, async (req, res) => {
   const accessToken = req.header("Authorization");
   try {
     const user = await User.findOne({ accessToken: accessToken });
@@ -323,7 +323,7 @@ app.listen(port, () => {
 //     "password": "password"
 // }
 
-// Get   http://localhost:8080/secrets
+// Get   http://localhost:8080/user-info
 // Headers: Authorization
 // Enter accessToken in value
 
