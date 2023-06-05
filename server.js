@@ -18,7 +18,7 @@ const app = express();
 // Add middlewares to enable cors and json body parsing
 app.use(
   cors({
-    origin: "http://localhost:8080", 
+    origin: "http://localhost:3000", 
     methods: ["GET", "POST"], // Specify the allowed methods
     allowedHeaders: ["Content-Type", "Authorization"], // Specify the allowed headers
   })
