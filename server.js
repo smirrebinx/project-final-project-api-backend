@@ -153,7 +153,7 @@ app.post(PATHS.register, async (req, res) => {
     res.status(400).json({success: false, message: "Password needs to be between 15 and 20 characters"})
   }
   try {
-    const salt = bcrypt.genSaltSync();
+    const salt = bcrypt.genSaltSync(10); // The hashing algorithm will go through 10 rounds of iteration, making it more secure.
     // Do not store plaintext passwords
     const newUser = await new User({
       firstName, 
