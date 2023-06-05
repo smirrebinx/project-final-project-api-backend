@@ -45,12 +45,6 @@ const validatePhone = (value) => {
     throw new Error('Mobile phone must be a number');
   }
 
-const phoneNumber = String(value); // Convert the number to a string for length check
-if (phoneNumber.length < 10 || phoneNumber.length > 15) {
-      throw new Error('Mobile phone must be between 10 and 15 digits')
-    }
-};
-
 const UserSchema = new mongoose.Schema({
   firstName: {
     type: String,
