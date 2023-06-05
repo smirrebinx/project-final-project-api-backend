@@ -44,6 +44,7 @@ const validatePhone = (value) => {
   if (typeof value !== 'number') {
     throw new Error('Mobile phone must be a number');
   }
+};
 
 const UserSchema = new mongoose.Schema({
   firstName: {
