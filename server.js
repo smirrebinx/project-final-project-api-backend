@@ -15,14 +15,27 @@ mongoose.Promise = Promise;
 const port = process.env.PORT || 8080;
 const app = express();
 
-// Add middlewares to enable cors and json body parsing
-app.use(
-  cors({
-    origin: "https://michelle-wegler-technigo-finalproject.netlify.app", 
-    methods: ["GET", "POST"], // Specify the allowed methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Specify the allowed headers
-  })
-); 
+// Define the allowed origins
+const allowedOrigins = [
+"https://michelle-wegler-technigo-finalproject.netlify.app",
+"http://localhost:3000"
+];
+
+// Middleware function to handle CORS
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+methods: ["GET", "POST"], // Specify the allowed methods
+allowedHeaders: ["Content-Type", "Authorization"], // Specify the allowed headers
+};
+
+// Apply the CORS middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Defines endpoint paths as constants to be able to only update the paths in one place if needed
