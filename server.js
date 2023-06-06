@@ -18,7 +18,7 @@ const app = express();
 // Add middlewares to enable cors and json body parsing
 app.use(
   cors({
-    origin: "https://michelle-wegler-technigo-finalproject.netlify.app/", 
+    origin: "https://michelle-wegler-technigo-finalproject.netlify.app", 
     methods: ["GET", "POST"], // Specify the allowed methods
     allowedHeaders: ["Content-Type", "Authorization"], // Specify the allowed headers
   })
