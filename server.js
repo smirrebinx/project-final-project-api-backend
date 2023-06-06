@@ -18,7 +18,7 @@ const app = express();
 // Add middlewares to enable cors and json body parsing
 app.use(
   cors({
-    origin: "http://localhost:3000", 
+    origin: "https://michelle-wegler-technigo-finalproject.netlify.app/", 
     methods: ["GET", "POST"], // Specify the allowed methods
     allowedHeaders: ["Content-Type", "Authorization"], // Specify the allowed headers
   })
@@ -321,4 +321,3 @@ app.listen(port, () => {
 // Get   http://localhost:8080/user-info
 // Headers: Authorization
 // Enter accessToken in value
-
