@@ -178,21 +178,31 @@ treatments.forEach(async (treatmentData) => {
 // GET
 app.get(PATHS.treatments, async (_, res) => {
   try {
-    // sort() method of Mongoose to sort the treatments based on the order of their _id field in the treatments array.
-    // The treatments will be returned in the same order as they are defined in the frontend.
-    const treatments = await Treatment.find().sort({ _id: { $in: treatments.map(treatment => treatment._id) } });
-      res.status(200).json({
-        success: true,
-        treatments: treatments,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: "Failed to retrieve treatments",
-        error,
-      });
+    const frontendTreatments = [
+      { icon: 'icon1.png', text: 'Haircut' },
+      { icon: 'icon2.png', text: 'Hair wash' },
+      { icon: 'icon3.png', text: 'Haircut and wash' },
+      { icon: 'icon4.png', text: 'Hair styling' },
+    ];
+
+    const sortedTreatments = await Treatment.find().sort({
+      _id: {
+        $in: frontendTreatments.map(treatment => treatment.text),
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      treatments: sortedTreatments,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve treatments',
+      error,
+    });
   }
-})
+});
 
 // Registration
 app.post(PATHS.register, async (req, res) => {
