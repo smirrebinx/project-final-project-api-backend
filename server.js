@@ -164,12 +164,15 @@ const treatments = [
 // Save treatmens to the database
 treatments.forEach(async (treatmentData) => {
   try {
-    const treatment = new Treatment(treatmentData);
-    await treatment.save();
-    console.log("Treatment created succesfully");
-} catch (error) {
-  console.error("Failed to create treatments", error)
-};
+    const existingTreatment = await Treatment.findOne(treatmentData);
+    if (!existingTreatment) {
+      const treatment = new Treatment(treatmentData);
+      await treatment.save();
+      console.log("Treatment created successfully");
+    }
+  } catch (error) {
+    console.error("Failed to create treatments", error);
+  }
 });
 
 // GET
