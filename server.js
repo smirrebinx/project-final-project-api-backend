@@ -108,21 +108,6 @@ UserSchema.index({ email: 1, mobilePhone: 1}, {unique: true });
 
 const User = mongoose.model("User", UserSchema);
 
-// const TreatmentSchema = new mongoose.Schema({
-// cut: {
-//   type: String
-// }, 
-// wash: {
-//   type: String
-// }, 
-// cutAndWash: {
-//   type: String
-// },
-// styling: {
-//   type: String
-// }
-// });
-
 const TreatmentSchema = new mongoose.Schema({
   icon: {
     type: String,
@@ -131,10 +116,10 @@ const TreatmentSchema = new mongoose.Schema({
   cut: {
     type: String,
   },
-  wash: {
+  dye: {
     type: String,
   },
-  cutAndWash: {
+  cutAndDye: {
     type: String,
   },
   styling: {
@@ -145,20 +130,12 @@ const TreatmentSchema = new mongoose.Schema({
 
 const Treatment = mongoose.model("Treatment", TreatmentSchema);
 
-// Create and save the treatments to the database
-// const treatments = [
-//   { cut: "Haircut" },
-//   { wash: "Hair wash" },
-//   { cutAndWash: "Haircut and wash" },
-//   { styling: "Hair styling" }
-// ];
-
 // New
 const treatments = [
-  { icon: 'icon1.png', cut: 'Haircut' },
-  { icon: 'icon2.png', wash: 'Hair wash' },
-  { icon: 'icon3.png', cutAndWash: 'Haircut and wash' },
-  { icon: 'icon4.png', styling: 'Hair styling' },
+  { icon: 'icon1.png', cut: 'Haircut', text: 'Haircut including simple wash and styling' },
+  { icon: 'icon2.png', dye: 'Hair Dye', text: 'One consistent color throughout your hair without requiring highlights or bleaching' },
+  { icon: 'icon3.png', cutAndDye: 'Haircut and Dye', text: 'Haircut and color including simple wash and styling' },
+  { icon: 'icon4.png', styling: 'Hair styling', text: 'Hair wash including blow-drying and styling with heat tools' },
 ];
 
 // Save treatmens to the database
