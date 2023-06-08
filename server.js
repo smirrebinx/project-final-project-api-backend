@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import crypto from "crypto";
@@ -94,41 +94,71 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: () => crypto.randomBytes(128).toString("hex")
   },
-  bookedTreatments: [{
+ bookedTreatments: [
+  {
     treatment: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Treatment"
-    }
-  }]
+      ref: 'Treatment',
+    },
+  },
+],
 });
 
 UserSchema.index({ email: 1, mobilePhone: 1}, {unique: true });
 
 const User = mongoose.model("User", UserSchema);
 
+// const TreatmentSchema = new mongoose.Schema({
+// cut: {
+//   type: String
+// }, 
+// wash: {
+//   type: String
+// }, 
+// cutAndWash: {
+//   type: String
+// },
+// styling: {
+//   type: String
+// }
+// });
+
 const TreatmentSchema = new mongoose.Schema({
-cut: {
-  type: String
-}, 
-wash: {
-  type: String
-}, 
-cutAndWash: {
-  type: String
-},
-styling: {
-  type: String
-}
+  icon: {
+    type: String,
+    required: true,
+  },
+  cut: {
+    type: String,
+  },
+  wash: {
+    type: String,
+  },
+  cutAndWash: {
+    type: String,
+  },
+  styling: {
+    type: String,
+  },
 });
+
 
 const Treatment = mongoose.model("Treatment", TreatmentSchema);
 
 // Create and save the treatments to the database
+// const treatments = [
+//   { cut: "Haircut" },
+//   { wash: "Hair wash" },
+//   { cutAndWash: "Haircut and wash" },
+//   { styling: "Hair styling" }
+// ];
+
+// New
 const treatments = [
-  { cut: "Haircut" },
-  { wash: "Hair wash" },
-  { cutAndWash: "Haircut and wash" },
-  { styling: "Hair styling" }
+  { icon: 'icon1.png', cut: 'Haircut' },
+  { icon: 'icon2.png', wash: 'Hair wash' },
+  { icon: 'icon3.png', cutAndWash: 'Haircut and wash' },
+  { icon: 'icon4.png', styling: 'Hair styling' },
 ];
 
 // Save treatmens to the database
@@ -334,3 +364,12 @@ app.listen(port, () => {
 // Get   http://localhost:8080/user-info
 // Headers: Authorization
 // Enter accessToken in value
+
+// Get   http://localhost:8080/treatments
+
+// POST   http://localhost:8080/book-treatment
+// Headers, Authorization, AccessToken from logged in user, treatmentid from get
+// body, raw, json
+// {
+//     "treatmentId": ""
+// }
