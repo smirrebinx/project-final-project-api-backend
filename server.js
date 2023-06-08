@@ -155,19 +155,21 @@ treatments.forEach(async (treatmentData) => {
 // GET
 app.get(PATHS.treatments, async (_, res) => {
   try {
-    const treatments = await Treatment.find();
-      res.status(200).json({
-        success: true,
-        treatments: treatments,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: "Failed to retrieve treatments",
-        error,
-      });
+    const totalTreatments = await Treatment.countDocuments(); // Get the total count of treatments
+    const limit = totalTreatments >= 4 ? 4 : totalTreatments; // Set the limit to 4 if there are at least 4 treatments, otherwise use the total count
+    const treatments = await Treatment.find().limit(limit); // Limit the number of treatments based on the calculated limit
+    res.status(200).json({
+      success: true,
+      treatments: treatments,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve treatments",
+      error,
+    });
   }
-})
+});
 
 // Registration
 app.post(PATHS.register, async (req, res) => {
