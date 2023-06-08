@@ -178,31 +178,19 @@ treatments.forEach(async (treatmentData) => {
 // GET
 app.get(PATHS.treatments, async (_, res) => {
   try {
-    const frontendTreatments = [
-      { icon: 'icon1.png', text: 'Haircut' },
-      { icon: 'icon2.png', text: 'Hair wash' },
-      { icon: 'icon3.png', text: 'Haircut and wash' },
-      { icon: 'icon4.png', text: 'Hair styling' },
-    ];
-// Sort the array for the frontend
-    const sortedTreatments = await Treatment.find().sort({
-      _id: {
-        $in: frontendTreatments.map(treatment => treatment.text),
-      },
-    });
-
-    res.status(200).json({
-      success: true,
-      treatments: sortedTreatments,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to retrieve treatments',
-      error,
-    });
+    const treatments = await Treatment.find();
+      res.status(200).json({
+        success: true,
+        treatments: treatments,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to retrieve treatments",
+        error,
+      });
   }
-});
+})
 
 // Registration
 app.post(PATHS.register, async (req, res) => {
