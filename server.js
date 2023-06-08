@@ -152,22 +152,16 @@ treatments.forEach(async (treatmentData) => {
   }
 });
 
-// GET individual treatment by ID
-app.get(`${PATHS.treatments}/:id`, async (req, res) => {
-  const { id } = req.params;
-  try {
-    const treatment = await Treatment.findById(id);
-    if (treatment) {
-      res.status(200).json({
-        success: true,
-        treatment,
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: 'Treatment not found',
-      });
-    }
+// GET 
+app.get(PATHS.treatments, async (_, res) => {
+ try {
+    const totalTreatments = await Treatment.countDocuments(); // Get the total count of treatments
+    const limit = totalTreatments >= 4 ? 4 : totalTreatments; // Set the limit to 4 if there are at least 4 treatments, otherwise use the total count
+    const treatments = await Treatment.find().limit(limit); // Limit the number of treatments based on the calculated limit
+    res.status(200).json({
+      success: true,
+      treatments: treatments,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
