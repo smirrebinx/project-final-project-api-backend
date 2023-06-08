@@ -319,20 +319,11 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
 });
 
 // Authenticate the user and return the user info page
-app.get(PATHS.userInfo, async (req, res) => {
-  const accessToken = req.header("Authorization");
+app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
   try {
-    const user = await User.findOne({ accessToken: accessToken });
-    if (user) {
-      const secretMessage = "This is your user information";
-      res.status(200).json({ secret: secretMessage });
-    } else {
-      res.status(401).json({
-        success: false,
-        response: "Please log in",
-        loggedOut: true,
-      });
-    }
+    const user = req.user;
+    const secretMessage = "This is your user information";
+    res.status(200).json({ success: true, message: secretMessage, user });
   } catch (e) {
     res.status(500).json({
       success: false,
