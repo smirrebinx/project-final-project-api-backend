@@ -184,7 +184,7 @@ app.get(PATHS.treatments, async (_, res) => {
       { icon: 'icon3.png', text: 'Haircut and wash' },
       { icon: 'icon4.png', text: 'Hair styling' },
     ];
-
+// Sort the array for the frontend
     const sortedTreatments = await Treatment.find().sort({
       _id: {
         $in: frontendTreatments.map(treatment => treatment.text),
