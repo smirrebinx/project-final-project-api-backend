@@ -178,7 +178,9 @@ treatments.forEach(async (treatmentData) => {
 // GET
 app.get(PATHS.treatments, async (_, res) => {
   try {
-    const treatments = await Treatment.find();
+    // sort() method of Mongoose to sort the treatments based on the order of their _id field in the treatments array.
+    // The treatments will be returned in the same order as they are defined in the frontend.
+    const treatments = await Treatment.find().sort({ _id: { $in: treatments.map(treatment => treatment._id) } });
       res.status(200).json({
         success: true,
         treatments: treatments,
