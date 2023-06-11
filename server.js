@@ -145,10 +145,8 @@ treatments.forEach(async (treatmentData) => {
 
 // GET 
 app.get(PATHS.treatments, async (_, res) => {
- try {
-    const totalTreatments = await Treatment.countDocuments(); // Get the total count of treatments
-    const limit = totalTreatments >= 4 ? 4 : totalTreatments; // Set the limit to 4 if there are at least 4 treatments, otherwise use the total count
-    const treatments = await Treatment.find().limit(limit); // Limit the number of treatments based on the calculated limit
+  try {
+    const treatments = await Treatment.find(); // Retrieve all treatments
     res.status(200).json({
       success: true,
       treatments: treatments,
