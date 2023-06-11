@@ -259,11 +259,11 @@ const authenticateUser = async (req, res, next) => {
 }
 
 app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
-  const { treatmentId } = req.body;
+  const { treatmentId, bookedDate } = req.body;
   const userId = req.user._id;
 
   try {
-    // Find the user and treatment by theri IDs
+    // Find the user and treatment by their IDs
     const [user, treatment] = await Promise.all([
       User.findById(userId),
       Treatment.findById(treatmentId),
@@ -271,15 +271,16 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
 
     if (!user || !treatment) {
       res.status(404).json({
-        success: false, 
+        success: false,
         message: "User or treatment not found",
       });
       return;
     }
 
-    // Create a new booking object
+    // Create a new booking object with treatmentId and bookedDate
     const booking = {
-      treatment: treatment._id
+      treatment: treatment._id,
+      bookedDate: new Date(bookedDate),
     };
 
     // Add the booking to the user's bookedTreatments array
@@ -295,10 +296,11 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to book treatment",
-      error, 
+      error,
     });
   }
 });
+
 
 // Authenticate the user and return the user info page
 app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
