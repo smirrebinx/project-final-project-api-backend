@@ -113,18 +113,9 @@ const TreatmentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  cut: {
+  name: {
     type: String,
-  },
-  dye: {
-    type: String,
-  },
-  cutAndDye: {
-    type: String,
-  },
-  styling: {
-    type: String,
-  },
+  }
 });
 
 
@@ -132,10 +123,10 @@ const Treatment = mongoose.model("Treatment", TreatmentSchema);
 
 // New
 const treatments = [
-  { icon: 'icon1.png', cut: 'Haircut', text: 'Haircut including simple wash and styling' },
-  { icon: 'icon2.png', dye: 'Hair Dye', text: 'One consistent color throughout your hair without requiring highlights or bleaching' },
-  { icon: 'icon3.png', cutAndDye: 'Haircut and Dye', text: 'Haircut and color including simple wash and styling' },
-  { icon: 'icon4.png', styling: 'Hair styling', text: 'Hair wash including blow-drying and styling with heat tools' },
+  { icon: 'icon1.png', name: 'Haircut', text: 'Haircut including simple wash and styling' },
+  { icon: 'icon2.png', name: 'Hair Dye', text: 'One consistent color throughout your hair without requiring highlights or bleaching' },
+  { icon: 'icon3.png', name: 'Haircut and Dye', text: 'Haircut and color including simple wash and styling' },
+  { icon: 'icon4.png', name: 'Hair styling', text: 'Hair wash including blow-drying and styling with heat tools' },
 ];
 
 // Save treatmens to the database
