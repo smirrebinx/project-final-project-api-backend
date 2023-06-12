@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.17.9",
-    "@babel/node": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
@@ -20,5 +19,8 @@
     "mongodb": "^5.5.0",
     "mongoose": "^6.11.1",
     "nodemon": "^2.0.15"
+  },
+  "devDependencies": {
+    "@babel/node": "^7.22.5"
   }
 }
