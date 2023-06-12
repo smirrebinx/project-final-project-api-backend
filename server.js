@@ -119,9 +119,18 @@ const TreatmentSchema = new mongoose.Schema({
 
 const Treatment = mongoose.model("Treatment", TreatmentSchema);
 
+// Define the resetDatabase function
 const resetDatabase = async () => {
   await User.deleteMany();
   await Treatment.deleteMany();
+
+  if (process.env.RESET_DB) {
+    await Data.deleteMany();
+    for (const singleData of treatmentData) {
+      const newTreatment = new Data(singleData);
+      await newTreatment.save();
+    }
+  }
 
   const treatments = [
     { icon: 'icon1.png', name: 'Haircut', text: 'Haircut including simple wash and styling' },
