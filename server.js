@@ -181,6 +181,8 @@ app.post(PATHS.register, async (req, res) => {
       response: {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
+        email: newUser.email,
+        mobilePhone: newUser.mobilePhone, 
         id: newUser._id,
         accessToken: newUser.accessToken
       }
