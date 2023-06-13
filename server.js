@@ -11,13 +11,14 @@ mongoose.Promise = Promise;
 
 // Defines the port the app will run on. Defaults to 8080, but can be overridden
 // when starting the server. Example command to overwrite PORT env variable value:
+// PORT=9000 npm start
 const port = process.env.PORT || 8080;
 const app = express();
 
 // Define the allowed origins
 const allowedOrigins = [
-  "https://michelle-wegler-technigo-finalproject.netlify.app",
-  "http://localhost:3000"
+"https://michelle-wegler-technigo-finalproject.netlify.app",
+"http://localhost:3000"
 ];
 
 // Middleware function to handle CORS
@@ -29,8 +30,8 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+methods: ["GET", "POST"], // Specify the allowed methods
+allowedHeaders: ["Content-Type", "Authorization"], // Specify the allowed headers
 };
 
 // Apply the CORS middleware
@@ -45,7 +46,7 @@ const PATHS = {
   treatments: "/treatments",
   bookTreatment: "/book-treatment",
   userInfo: "/user-info"
-};
+}
 
 // Start defining your routes here
 app.get("/", (req, res) => {
@@ -66,15 +67,15 @@ const UserSchema = new mongoose.Schema({
     maxlength: 30
   },
   lastName: {
-    type: String,
-    required: true,
+    type: String, 
+    required: true, 
     minlength: 2,
     maxlength: 30
   },
   email: {
-    type: String,
+    type: String, 
     required: true,
-    unique: true
+    unique: true 
   },
   mobilePhone: {
     type: Number,
@@ -93,17 +94,17 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: () => crypto.randomBytes(128).toString("hex")
   },
-  bookedTreatments: [
-    {
-      treatment: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Treatment',
-      },
+ bookedTreatments: [
+  {
+    treatment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Treatment',
     },
-  ],
+  },
+],
 });
 
-UserSchema.index({ email: 1, mobilePhone: 1 }, { unique: true });
+UserSchema.index({ email: 1, mobilePhone: 1}, {unique: true });
 
 const User = mongoose.model("User", UserSchema);
 
@@ -117,49 +118,35 @@ const TreatmentSchema = new mongoose.Schema({
   }
 });
 
+
 const Treatment = mongoose.model("Treatment", TreatmentSchema);
 
-// Define the resetDatabase function
-const resetDatabase = async () => {
-  await User.deleteMany();
-  await Treatment.deleteMany();
+// New
+const treatments = [
+  { icon: 'icon1.png', name: 'Haircut', text: 'Haircut including simple wash and styling' },
+  { icon: 'icon2.png', name: 'Hair Dye', text: 'One consistent color throughout your hair without requiring highlights or bleaching' },
+  { icon: 'icon3.png', name: 'Haircut and Dye', text: 'Haircut and color including simple wash and styling' },
+  { icon: 'icon4.png', name: 'Hair styling', text: 'Hair wash including blow-drying and styling with heat tools' },
+];
 
-  if (process.env.RESET_DB) {
-    await Data.deleteMany();
-    for (const singleData of treatmentData) {
-      const newTreatment = new Data(singleData);
-      await newTreatment.save();
+// Save treatmens to the database
+treatments.forEach(async (treatmentData) => {
+  try {
+    const existingTreatment = await Treatment.findOne(treatmentData);
+    if (!existingTreatment) {
+      const treatment = new Treatment(treatmentData);
+      await treatment.save();
+      console.log("Treatment created successfully");
     }
+  } catch (error) {
+    console.error("Failed to create treatments", error);
   }
+});
 
-  const treatments = [
-    { icon: 'icon1.png', name: 'Haircut', text: 'Haircut including simple wash and styling' },
-    { icon: 'icon2.png', name: 'Hair Dye', text: 'One consistent color throughout your hair without requiring highlights or bleaching' },
-    { icon: 'icon3.png', name: 'Haircut and Dye', text: 'Haircut and color including simple wash and styling' },
-    { icon: 'icon4.png', name: 'Hair styling', text: 'Hair wash including blow-drying and styling with heat tools' },
-  ];
-
-  // Save treatments to the database
-  for (const treatmentData of treatments) {
-    try {
-      const existingTreatment = await Treatment.findOne(treatmentData);
-      if (!existingTreatment) {
-        const treatment = new Treatment(treatmentData);
-        await treatment.save();
-        console.log("Treatment created successfully");
-      }
-    } catch (error) {
-      console.error("Failed to create treatments", error);
-    }
-  }
-};
-
-resetDatabase();
-
-// GET Treatments
+// GET 
 app.get(PATHS.treatments, async (_, res) => {
   try {
-    const treatments = await Treatment.find();
+    const treatments = await Treatment.find(); // Retrieve all treatments
     res.status(200).json({
       success: true,
       treatments: treatments,
@@ -177,18 +164,18 @@ app.get(PATHS.treatments, async (_, res) => {
 app.post(PATHS.register, async (req, res) => {
   const { firstName, lastName, email, mobilePhone, password } = req.body;
   if (password.length < 15 || password.length > 20) {
-    res.status(400).json({ success: false, message: "Password needs to be between 15 and 20 characters" });
-    return;
+    res.status(400).json({success: false, message: "Password needs to be between 15 and 20 characters"})
   }
   try {
-    const salt = bcrypt.genSaltSync(10);
+    const salt = bcrypt.genSaltSync(10); // The hashing algorithm will go through 10 rounds of iteration, making it more secure.
+    // Do not store plaintext passwords
     const newUser = await new User({
-      firstName,
+      firstName, 
       lastName,
       email,
       mobilePhone,
-      password: bcrypt.hashSync(password, salt)
-    }).save();
+      password: bcrypt.hashSync(password, salt)})
+    .save();
     res.status(201).json({
       success: true,
       response: {
@@ -197,22 +184,22 @@ app.post(PATHS.register, async (req, res) => {
         id: newUser._id,
         accessToken: newUser.accessToken
       }
-    });
+    })
   } catch (e) {
+    // Bad request
     res.status(400).json({
       success: false,
       response: e,
-      message: 'Could not create user',
+      message: 'Could not create user', 
       errors: e.errors
     });
   }
 });
-
 // Login
 app.post(PATHS.login, async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({email: email})
     if (user && bcrypt.compareSync(password, user.password)) {
       res.status(200).json({
         success: true,
@@ -241,16 +228,16 @@ app.post(PATHS.login, async (req, res) => {
 const authenticateUser = async (req, res, next) => {
   const accessToken = req.header("Authorization");
   try {
-    const user = await User.findOne({ accessToken: accessToken });
+    const user = await User.findOne({accessToken: accessToken});
     if (user) {
-      req.user = user;
+      req.user = user; // Set the authenticated user object in the request
       next();
     } else {
       res.status(401).json({
         success: false,
         response: "Please log in",
         loggedOut: true
-      });
+      })
     }
   } catch (e) {
     res.status(500).json({
@@ -258,13 +245,14 @@ const authenticateUser = async (req, res, next) => {
       response: e
     });
   }
-};
+}
 
 app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
   const { treatmentId, bookedDate } = req.body;
   const userId = req.user._id;
 
   try {
+    // Find the user and treatment by their IDs
     const [user, treatment] = await Promise.all([
       User.findById(userId),
       Treatment.findById(treatmentId),
@@ -302,6 +290,7 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
   }
 });
 
+
 // Authenticate the user and return the user info page
 app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
   try {
@@ -320,3 +309,31 @@ app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
+// Test in postman
+
+// Post: http://localhost:8080/register 
+    // "firstName": "firstname",
+    // "lastName": "lastname",
+    // "email": "name@gmail.com",
+    // "mobilePhone": "0000000000",
+    // "password": "password"
+
+// Post: http://localhost:8080/login
+// {
+//     "firstName": "name",
+//     "password": "password"
+// }
+
+// Get   http://localhost:8080/user-info
+// Headers: Authorization
+// Enter accessToken in value
+
+// Get   http://localhost:8080/treatments
+
+// POST   http://localhost:8080/book-treatment
+// Headers, Authorization, AccessToken from logged in user, treatmentid from get
+// body, raw, json
+// {
+//     "treatmentId": ""
+// }
