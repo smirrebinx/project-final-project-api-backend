@@ -109,10 +109,6 @@ UserSchema.index({ email: 1, mobilePhone: 1}, {unique: true });
 const User = mongoose.model("User", UserSchema);
 
 const TreatmentSchema = new mongoose.Schema({
-  icon: {
-    type: String,
-    required: true,
-  },
   name: {
     type: String,
   }
@@ -121,27 +117,48 @@ const TreatmentSchema = new mongoose.Schema({
 
 const Treatment = mongoose.model("Treatment", TreatmentSchema);
 
-// New
-const treatments = [
-  { name: 'Haircut' },
-  { name: 'Hair Dye' },
-  { name: 'Haircut and Dye' },
-  { name: 'Hair styling'},
-];
-
-// Save treatmens to the database
-treatments.forEach(async (treatmentData) => {
+(async () => {
   try {
-    const existingTreatment = await Treatment.findOne(treatmentData);
-    if (!existingTreatment) {
-      const treatment = new Treatment(treatmentData);
-      await treatment.save();
-      console.log("Treatment created successfully");
-    }
+    const createTreatments = async () => {
+      const treatments = [
+        { name: 'Haircut' },
+        { name: 'Hair Dye' },
+        { name: 'Haircut and Dye' },
+        { name: 'Hair styling'},
+      ];
+
+      try {
+        for (const treatmentData of treatments) {
+          const existingTreatment = await Treatment.findOne(treatmentData);
+          if (!existingTreatment) {
+            const treatment = new Treatment(treatmentData);
+            await treatment.save();
+            console.log("Treatment created successfully");
+          }
+        }
+      } catch (error) {
+        console.error("Failed to create treatments", error);
+      }
+    };
+
+    const checkAndCreateTreatments = async () => {
+      try {
+        const existingTreatments = await Treatment.find();
+        if (existingTreatments.length === 0) {
+          await createTreatments();
+        }
+      } catch (error) {
+        console.error("Failed to check existing treatments", error);
+      }
+    };
+
+    await checkAndCreateTreatments();
+
   } catch (error) {
-    console.error("Failed to create treatments", error);
+    console.error("Failed to run the treatments setup", error);
   }
-});
+})();
+
 
 // GET 
 app.get(PATHS.treatments, async (_, res) => {
