@@ -267,7 +267,7 @@ const authenticateUser = async (req, res, next) => {
 }
 
 app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
-  const { treatmentId, bookedDate } = req.body;
+  const { treatmentId, pickedDate } = req.body;
   const userId = req.user._id;
 
   try {
@@ -288,7 +288,7 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
     // Create a new booking object with treatmentId and bookedDate
     const booking = {
       treatment: treatment._id,
-      bookedDate: new Date(bookedDate),
+      bookedDate: new Date(pickedDate),
     };
 
     // Add the booking to the user's bookedTreatments array
