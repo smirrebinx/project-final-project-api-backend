@@ -128,8 +128,15 @@ const Treatment = mongoose.model("Treatment", TreatmentSchema);
       ];
 
       try {
+        // Fetch all existing treatments from the database
+        const existingTreatments = await Treatment.find();
+
         for (const treatmentData of treatments) {
-          const existingTreatment = await Treatment.findOne(treatmentData);
+          // Check if the treatment already exists in the fetched treatments
+          const existingTreatment = existingTreatments.find(
+            (treatment) => treatment.name === treatmentData.name
+          );
+
           if (!existingTreatment) {
             const treatment = new Treatment(treatmentData);
             await treatment.save();
@@ -141,23 +148,12 @@ const Treatment = mongoose.model("Treatment", TreatmentSchema);
       }
     };
 
-    const checkAndCreateTreatments = async () => {
-      try {
-        const existingTreatments = await Treatment.find();
-        if (existingTreatments.length === 0) {
-          await createTreatments();
-        }
-      } catch (error) {
-        console.error("Failed to check existing treatments", error);
-      }
-    };
-
-    await checkAndCreateTreatments();
-
+    await createTreatments(); // Call the function to execute the logic
   } catch (error) {
-    console.error("Failed to run the treatments setup", error);
+    console.error("Error occurred", error);
   }
 })();
+
 
 
 // GET 
