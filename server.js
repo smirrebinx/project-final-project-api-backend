@@ -43,9 +43,9 @@ const PATHS = {
   root: "/",
   register: "/register",
   login: "/login",
-  treatments: "/treatments",
-  bookTreatment: "/book-treatment",
-  userInfo: "/user-info"
+  treatments: "/treatment",
+  bookTreatment: "/booktreatment",
+  userInfo: "/userinfo"
 }
 
 // Start defining your routes here
@@ -221,6 +221,8 @@ app.post(PATHS.login, async (req, res) => {
         response: {
           firstName: user.firstName,
           lastName: user.lastName,
+          email: user.email,
+          mobilePhone: user.mobilePhone, 
           id: user._id,
           accessToken: user.accessToken
         }
@@ -281,7 +283,7 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
       return;
     }
 
-    // Create a new booking object with treatmentId and bookedDate
+    // Create a new booking object with treatmentId and pickedDate
     const booking = {
       treatment: treatment._id,
       bookedDate: new Date(pickedDate),
