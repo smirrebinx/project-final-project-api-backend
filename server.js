@@ -43,7 +43,7 @@ const PATHS = {
   root: "/",
   register: "/register",
   login: "/login",
-  treatments: "/treatment",
+  treatments: "/treatments",
   bookTreatment: "/booktreatment",
   userInfo: "/userinfo"
 }
@@ -153,7 +153,6 @@ const Treatment = mongoose.model("Treatment", TreatmentSchema);
     console.error("Error occurred", error);
   }
 })();
-
 
 
 // GET 
