@@ -49,7 +49,7 @@ const PATHS = {
 }
 
 // Start defining your routes here
-app.get(PATHS.root, (req, res) => {
+app.get(PATHS.root, (res) => {
   res.send(listEndpoints(app));
 });
 
