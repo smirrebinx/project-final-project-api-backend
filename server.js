@@ -141,11 +141,9 @@ const Treatment = mongoose.model("Treatment", TreatmentSchema);
           if (!existingTreatment) {
             const treatment = new Treatment(treatmentData);
             await treatment.save();
-            console.log("Treatment created successfully");
           }
         }
       } catch (error) {
-        console.error("Failed to create treatments", error);
       }
     };
 
@@ -311,12 +309,22 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
 app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
   try {
     const user = req.user;
+    
+    // Populate the "bookedTreatments.treatment" field to fetch treatment details
     await user.populate("bookedTreatments.treatment").execPopulate();
+
+    // Map over the bookedTreatments array and extract treatment and date for each booking
+    const bookedTreatments = user.bookedTreatments.map((booking) => {
+      return {
+        treatment: booking.treatment, // Picked treatment
+        date: booking.date, // Picked date
+      };
+    });
 
     res.status(200).json({
       success: true,
       message: "Booked treatments retrieved successfully",
-      bookedTreatments: user.bookedTreatments,
+      bookedTreatments: bookedTreatments,
     });
   } catch (error) {
     res.status(500).json({
@@ -326,7 +334,6 @@ app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
     });
   }
 });
-
 
 
 // Authenticate the user and return the user info page
@@ -347,31 +354,3 @@ app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-
-// Test in postman
-
-// Post: http://localhost:8080/register 
-    // "firstName": "firstname",
-    // "lastName": "lastname",
-    // "email": "name@gmail.com",
-    // "mobilePhone": "0000000000",
-    // "password": "password"
-
-// Post: http://localhost:8080/login
-// {
-//     "firstName": "name",
-//     "password": "password"
-// }
-
-// Get   http://localhost:8080/user-info
-// Headers: Authorization
-// Enter accessToken in value
-
-// Get   http://localhost:8080/treatments
-
-// POST   http://localhost:8080/book-treatment
-// Headers, Authorization, AccessToken from logged in user, treatmentid from get
-// body, raw, json
-// {
-//     "treatmentId": ""
-// }
