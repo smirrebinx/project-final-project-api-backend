@@ -311,7 +311,14 @@ app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
     const user = req.user;
     
     // Populate the "bookedTreatments.treatment" field to fetch treatment details
-    await user.populate("bookedTreatments.treatment").execPopulate();
+    await user.populate({
+      path: "bookedTreatments",
+      populate: {
+        path: "treatment",
+        model: "Treatment",
+        select: "name"
+      }
+    }).execPopulate();
 
     // Map over the bookedTreatments array and extract treatment and date for each booking
     const bookedTreatments = user.bookedTreatments.map((booking) => {
@@ -334,7 +341,6 @@ app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
     });
   }
 });
-
 
 // Authenticate the user and return the user info page
 app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
