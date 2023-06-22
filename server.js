@@ -45,6 +45,7 @@ const PATHS = {
   login: "/login",
   treatments: "/treatments",
   bookTreatment: "/booktreatment",
+  bookedTreatment: "/bookedTreatment",
   userInfo: "/userinfo"
 }
 
@@ -305,6 +306,27 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
     });
   }
 });
+
+// Get the booked treatments for a user
+app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
+  try {
+    const user = req.user;
+    await user.populate("bookedTreatments.treatment").execPopulate();
+
+    res.status(200).json({
+      success: true,
+      message: "Booked treatments retrieved successfully",
+      bookedTreatments: user.bookedTreatments,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve booked treatments",
+      error,
+    });
+  }
+});
+
 
 
 // Authenticate the user and return the user info page
