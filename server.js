@@ -316,8 +316,8 @@ app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
     // Map over the bookedTreatments array and extract treatment and date for each booking
     const bookedTreatments = user.bookedTreatments.map((booking) => {
       return {
-        treatment: booking.treatment, // Picked treatment
-        date: booking.date, // Picked date
+        treatment: booking.treatment.name, // Picked treatment
+        date: booking.bookedDate // Picked date
       };
     });
 
