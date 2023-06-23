@@ -348,6 +348,10 @@ app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
 });
 
 // Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+try {
+  app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
+} catch (error) {
+  console.error("Error occurred during server startup:", error);
+}
