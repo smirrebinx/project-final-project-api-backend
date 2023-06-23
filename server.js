@@ -44,8 +44,8 @@ const PATHS = {
   register: "/register",
   login: "/login",
   treatments: "/treatments",
-  bookTreatment: "/bookTreatment",
-  bookedTreatment: "/bookedTreatment",
+  bookTreatment: "/booktreatment",
+  bookedTreatment: "/bookedtreatment",
   userInfo: "/userinfo"
 }
 
