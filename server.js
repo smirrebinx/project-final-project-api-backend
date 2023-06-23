@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import listEndpoints from "express-list-endpoints";
+import moment from 'moment-timezone';
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/final-project-api";
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -350,6 +351,8 @@ app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
 // Start the server
 try {
   app.listen(port, () => {
+    // Set the timezone to "Europe/London"
+    moment.tz.setDefault('Europe/London');
     console.log(`Server running on http://localhost:${port}`);
   });
 } catch (error) {
