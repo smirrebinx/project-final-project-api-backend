@@ -96,13 +96,13 @@ const UserSchema = new mongoose.Schema({
     default: () => crypto.randomBytes(128).toString("hex")
   },
  bookedTreatments: [
-  {
-    treatment: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Treatment',
-    },
-  },
-],
+    {
+      bookedDate: {
+        type: Date,
+        required: true
+      }
+    }
+  ]
 });
 
 UserSchema.index({ email: 1, mobilePhone: 1}, {unique: true });
