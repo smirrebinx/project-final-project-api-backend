@@ -262,6 +262,7 @@ const authenticateUser = async (req, res, next) => {
   }
 }
 
+// Post the picked date
 app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
   const { pickedDate } = req.body;
   const userId = req.user._id;
@@ -300,6 +301,33 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to book treatment",
+      error,
+    });
+  }
+});
+
+
+// Get the booked treatments for a user
+app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
+  try {
+    const user = req.user;
+    
+    // Map over the bookedTreatments array and extract the date for each booking
+    const bookedTreatments = user.bookedTreatments.map((booking) => {
+      return {
+        date: booking.bookedDate // Picked date
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Booked treatments retrieved successfully",
+      bookedTreatments: bookedTreatments,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve booked treatments",
       error,
     });
   }
