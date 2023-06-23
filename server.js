@@ -287,41 +287,19 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
     user.bookedTreatments.push(booking);
     await user.save();
 
+    console.log("Booking:", booking);
+
     res.status(200).json({
       success: true,
       message: "Treatment booked successfully",
       booking,
     });
   } catch (error) {
+    console.log("Error:", error);
+
     res.status(500).json({
       success: false,
       message: "Failed to book treatment",
-      error,
-    });
-  }
-});
-
-// Get the booked treatments for a user
-app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
-  try {
-    const user = req.user;
-    
-    // Map over the bookedTreatments array and extract the date for each booking
-    const bookedTreatments = user.bookedTreatments.map((booking) => {
-      return {
-        date: booking.bookedDate // Picked date
-      };
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Booked treatments retrieved successfully",
-      bookedTreatments: bookedTreatments,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to retrieve booked treatments",
       error,
     });
   }
