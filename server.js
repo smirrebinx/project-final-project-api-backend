@@ -263,27 +263,23 @@ const authenticateUser = async (req, res, next) => {
 }
 
 app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
-  const { treatmentId, pickedDate } = req.body;
+  const { pickedDate } = req.body;
   const userId = req.user._id;
 
   try {
-    // Find the user and treatment by their IDs
-    const [user, treatment] = await Promise.all([
-      User.findById(userId),
-      Treatment.findById(treatmentId),
-    ]);
+    // Find the user by ID
+    const user = await User.findById(userId);
 
-    if (!user || !treatment) {
+    if (!user) {
       res.status(404).json({
         success: false,
-        message: "User or treatment not found",
+        message: "User not found",
       });
       return;
     }
 
-    // Create a new booking object with treatmentId and pickedDate
+    // Create a new booking object with the pickedDate
     const booking = {
-      treatment: treatment._id,
       bookedDate: new Date(pickedDate),
     };
 
@@ -310,13 +306,9 @@ app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
   try {
     const user = req.user;
     
-    // Populate the "bookedTreatments.treatment" field to fetch treatment details
-    await user.populate("bookedTreatments.treatment").execPopulate();
-
-    // Map over the bookedTreatments array and extract treatment and date for each booking
+    // Map over the bookedTreatments array and extract the date for each booking
     const bookedTreatments = user.bookedTreatments.map((booking) => {
       return {
-        treatment: booking.treatment.name, // Picked treatment
         date: booking.bookedDate // Picked date
       };
     });
