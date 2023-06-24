@@ -126,7 +126,7 @@ const Treatment = mongoose.model("Treatment", TreatmentSchema);
         { name: 'Haircut' },
         { name: 'Hair Dye' },
         { name: 'Haircut and Dye' },
-        { name: 'Hair styling'},
+        { name: 'Hair Styling'},
       ];
 
       try {
@@ -289,8 +289,6 @@ app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
     user.bookedTreatments.push(booking);
     await user.save();
 
-    console.log("Booking:", booking);
-
     res.status(200).json({
       success: true,
       message: "Treatment booked successfully",
@@ -338,8 +336,8 @@ app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
 app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
   try {
     const user = req.user;
-    const secretMessage = "This is your user information";
-    res.status(200).json({ success: true, message: secretMessage, user });
+    const userInfo = "This is your user information";
+    res.status(200).json({ success: true, message: userInfo, user });
   } catch (e) {
     res.status(500).json({
       success: false,
