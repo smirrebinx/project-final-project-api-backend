@@ -10,7 +10,7 @@ Secure password storage: User passwords are encrypted using bcrypt before being 
 
 Input validation: The backend API performs validation on user input and returns appropriate error messages if validation fails.
 
-Authentication: Once logged in, users can access authenticated endpoints and perform various actions within the application, including booking a treatment, providing details for the treatment, canceling bookings, and updating their contact information.
+Authentication: Once logged in, users can access authenticated endpoints and perform various actions within the application, including choosing and booking a treatment and see their user information.
 
 Tech stack: MongoDB, Mongoose, Express, MongoDB Compass, MongoDB Atlas, Google Cloud.
 
