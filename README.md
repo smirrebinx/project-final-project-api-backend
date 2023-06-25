@@ -24,5 +24,8 @@ Start the backend server by running npm start in the backend directory.
 Launch the frontend application by running npm start in the frontend directory.
 Access the application in your web browser at http://localhost:3000.
 
+## Frontend repo
+https://github.com/smirrebinx/project-final-project-frontend.git
+
 ## View it live
 https://michelle-wegler-technigo-finalproject.netlify.app
