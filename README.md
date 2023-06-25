@@ -29,3 +29,4 @@ https://github.com/smirrebinx/project-final-project-frontend.git
 
 ## View it live
 https://michelle-wegler-technigo-finalproject.netlify.app
+![final-project](https://github.com/smirrebinx/project-final-project-api-backend/assets/48405465/5a1deeea-7e92-4574-b96a-9ddbd94b3297)
