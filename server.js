@@ -5,6 +5,7 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import listEndpoints from "express-list-endpoints";
 import moment from 'moment-timezone';
+import { body, validationResult } from 'express-validator';
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/final-project-api";
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -173,11 +174,25 @@ app.get(PATHS.treatments, async (_, res) => {
 });
 
 // Registration
-app.post(PATHS.register, async (req, res) => {
-  const { firstName, lastName, email, mobilePhone, password } = req.body;
-  if (password.length < 15 || password.length > 20) {
-    res.status(400).json({success: false, message: "Password needs to be between 15 and 20 characters"})
+app.post(PATHS.register,[
+  // Validate first name
+  body('firstName').isLength({ min: 2, max: 30 }).withMessage('First name must be between 2 and 30 characters'),
+  // Validate last name
+  body('lastName').isLength({ min:2, max: 30}).withMessage('Last name must be between 2 and 30 characters'),
+  // Validate email
+  body('email').isEmail().withMessage('Invalid email address').normalizeEmail(),
+  // Validate mobile phone as a string that must match a certain pattern
+  body('mobilePhone').isMobilePhone().withMessage('Invalid mobile phone number'),
+  // Validate password length
+  body('password').isLength({ min: 15, max: 20 }).withMessage('Password needs to be between 15 and 20 characters'),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
   }
+  
+  const { firstName, lastName, email, mobilePhone, password } = req.body;
+  
   try {
     const salt = bcrypt.genSaltSync(10); // The hashing algorithm will go through 10 rounds of iteration, making it more secure.
     // Do not store plaintext passwords
@@ -209,9 +224,21 @@ app.post(PATHS.register, async (req, res) => {
     });
   }
 });
+
 // Login
-app.post(PATHS.login, async (req, res) => {
+app.post(PATHS.login,[
+  // Validate that the email is in a correct format
+  body('email').isEmail().withMessage('Enter a valid email address'),
+  // Validate that the password is not empty
+  body('password').not().isEmpty().withMessage('Password cannot be empty'), 
+], async (req, res) => {
+  // Check for validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
   const { email, password } = req.body;
+
   try {
     const user = await User.findOne({email: email})
     if (user && bcrypt.compareSync(password, user.password)) {
@@ -229,13 +256,14 @@ app.post(PATHS.login, async (req, res) => {
     } else {
       res.status(400).json({
         success: false,
-        response: "Credentials do not match"
+        message: "Invalid login credentials"
       });
     }
   } catch (e) {
     res.status(500).json({
       success: false,
-      response: e
+      message: "An error occurred while attempting to login",
+      error: e
     });
   }
 });

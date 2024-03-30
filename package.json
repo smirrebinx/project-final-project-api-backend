@@ -16,6 +16,7 @@
     "crypto": "^1.0.1",
     "express": "^4.19.2",
     "express-list-endpoints": "^6.0.0",
+    "express-validator": "^7.0.1",
     "moment-timezone": "^0.5.43",
     "mongodb": "^5.8.0",
     "mongoose": "^6.11.3"
