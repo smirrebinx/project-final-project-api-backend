@@ -12,7 +12,7 @@ Input validation: The backend API performs validation on user input and returns 
 
 Authentication: Once logged in, users can access authenticated endpoints and perform various actions within the application, including choosing and booking a treatment and see their user information.
 
-Tech stack: MongoDB, Mongoose, Express, MongoDB Compass, MongoDB Atlas, Google Cloud.
+Tech stack: Node.js, MongoDB, Mongoose, Express, MongoDB Compass, MongoDB Atlas, Google Cloud.
 
 ## Installation and Usage Instructions
 To set up and run the project, follow these steps:
