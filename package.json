@@ -14,7 +14,7 @@
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
-    "express": "^4.20.0",
+    "express": "^4.21.1",
     "express-list-endpoints": "^6.0.0",
     "express-validator": "^7.0.1",
     "moment-timezone": "^0.5.43",
