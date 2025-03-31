@@ -20,7 +20,8 @@ const app = express();
 // Define the allowed origins
 const allowedOrigins = [
 "https://michelle-wegler-technigo-finalproject.netlify.app",
-"http://localhost:3000"
+"http://localhost:3000",
+"http://localhost:5173"
 ];
 
 // Middleware function to handle CORS
