@@ -57,11 +57,7 @@ app.get(PATHS.root, (_,res) => {
   res.send(listEndpoints(app));
 });
 
-const validatePhone = (value) => {
-  if (typeof value !== 'number') {
-    throw new Error('Mobile phone must be a number');
-  }
-};
+const validatePhone = (phone) => /^[0-9]{10,15}$/.test(phone);
 
 const UserSchema = new mongoose.Schema({
   firstName: {
@@ -82,7 +78,7 @@ const UserSchema = new mongoose.Schema({
     unique: true 
   },
   mobilePhone: {
-    type: Number,
+    type: String,
     required: true,
     unique: true,
     validate: {
