@@ -383,7 +383,7 @@ app.get(PATHS.bookedTreatment, protectedRouteLimiter, authenticateUser, async (r
 });
 
 // Authenticate the user and return the user info page
-app.get(PATHS.userInfo, authenticateUser, async (req, res) => {
+app.get(PATHS.userInfo, protectedRouteLimiter, authenticateUser, async (req, res) => {
   try {
     const user = req.user;
     const userInfo = "This is your user information";
