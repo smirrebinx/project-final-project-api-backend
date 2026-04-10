@@ -19,7 +19,8 @@
     "express-validator": "^7.3.0",
     "moment-timezone": "^0.5.43",
     "mongodb": "^6.15.0",
-    "mongoose": "^8.12.1"
+    "mongoose": "^8.12.1",
+    "express-rate-limit": "^8.3.2"
   },
   "devDependencies": {
     "@babel/node": "^7.22.5"

@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import listEndpoints from "express-list-endpoints";
 import moment from 'moment-timezone';
 import { body, validationResult } from 'express-validator';
+import rateLimit from "express-rate-limit";
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/final-project-api";
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -153,8 +154,13 @@ const Treatment = mongoose.model("Treatment", TreatmentSchema);
 })();
 
 
+const treatmentsRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per window
+});
+
 // GET 
-app.get(PATHS.treatments, async (_, res) => {
+app.get(PATHS.treatments, treatmentsRateLimiter, async (_, res) => {
   try {
     const treatments = await Treatment.find(); // Retrieve all treatments
     res.status(200).json({
