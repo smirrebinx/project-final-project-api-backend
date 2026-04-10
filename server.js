@@ -237,7 +237,7 @@ app.post(PATHS.login,[
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({email: email})
+    const user = await User.findOne({ email: { $eq: email } })
     if (user && bcrypt.compareSync(password, user.password)) {
       res.status(200).json({
         success: true,
