@@ -357,7 +357,7 @@ app.post(PATHS.bookTreatment, protectedRouteLimiter, authenticateUser, async (re
 
 
 // Get the booked treatments for a user
-app.get(PATHS.bookedTreatment, authenticateUser, async (req, res) => {
+app.get(PATHS.bookedTreatment, protectedRouteLimiter, authenticateUser, async (req, res) => {
   try {
     const user = req.user;
     
