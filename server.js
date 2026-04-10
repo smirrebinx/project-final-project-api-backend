@@ -228,8 +228,20 @@ app.post(PATHS.register,[
   }
 });
 
+// Login rate limiter to protect database-backed authentication from abuse
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 login requests per window
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many login attempts. Please try again later."
+  }
+});
+
 // Login
-app.post(PATHS.login,[
+app.post(PATHS.login, loginLimiter,[
   // Validate that the email is in a correct format
   body('email').isEmail().withMessage('Enter a valid email address'),
   // Validate that the password is not empty
