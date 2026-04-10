@@ -306,8 +306,15 @@ const authenticateUser = async (req, res, next) => {
   }
 }
 
+const protectedRouteLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 // Post the picked date
-app.post(PATHS.bookTreatment, authenticateUser, async (req, res) => {
+app.post(PATHS.bookTreatment, protectedRouteLimiter, authenticateUser, async (req, res) => {
   const { pickedDate } = req.body;
   const userId = req.user._id;
 
