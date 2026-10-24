@@ -8,6 +8,9 @@
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "24.x"
+  },
   "dependencies": {
     "@babel/core": "^8.0.1",
     "@babel/preset-env": "^8.0.2",
